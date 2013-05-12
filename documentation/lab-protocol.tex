@@ -72,25 +72,75 @@
 
 \section{lab1a - Safety Objectives}
 Security is the core requirement to this software system. In this chapter we will list and explain the
-safety objectives to the system as a whole as well as its implications to its separate components. The order
-of the targets has no implications to their importance.
+safety objectives of the system as a whole as well as its implications to its separate components. The order
+of the targets has no impact on their importance.
+
 
 \subsection{Authorization}
+Despite the fact that authorization represents the basic functionality of this system, this goal is also
+an important non-functional issue concerning the communication of the different components themselves. Consequently, all components,
+especially those outside of immediate control, but also those within system boundaries are subject to strict
+authorization.
+
+A strategy to achieve this goal is to follow the \emph{complete mediation} design principle which states that each and
+every request needs to be verified instead of keeping a cached authorization result. As such, the performance might suffer
+a bit but regarding security this is a must.
 
 
 \subsection{Authenticity}
+Similar to \emph{authorization}, authenticity is important for intra- and inter-communication of all components. To
+ensure authenticity the \emph{complete mediation} principle provides support to a comprehensive certificate-based authentication
+system. These certificates are managed and distributed by a centralized certificate server which will be described later.
+
+The most vulnerable spot are the external interfaces to the \emph{authorization and object management} as an intruder could get
+a) information about the access rights (confidentiality) or b) change any of these data (integrity). Therefore it is important to impose
+a strict authentication and autorization policy here.
+
+Functional authentication will basically be realized using a RFID-chip each employee or person who wishes to gain access has to carry.
+In normal situations the person to be authorized has to put the chip onto or in front of a reader and provide his six digit pin
+(which has to be changed every six months). There will also be the possibility to lock a chip similar to a credit card if lost.
+For critical secured objects an additional iris-scan will be conducted and compared to the data stored on the chip.
+More information is to follow in a later chapter.
 
 
-\subsection{Data Integrity}
+\subsection{Integrity}
+Data integrity is partially guaranteed by the rigid authentication and authorization mechanisms present within and around the system.
+Naturally this goal plays an important role wherever data is stored (which is the \emph{auditing} and \emph{authorization and object management}
+component in this system). Checksums allow the detection of illegitimate changes to these data.
 
-
-\subsection{Availability}
+The most important card against alteration of communication data is the application of encrypted protocols everywhere, even within
+secured boundaries.
 
 
 \subsection{Confidentiality}
+As with integrity, the fact that all communication happens in an encrypted way ensures the important confidentiality goal. Additional
+measures to avoid unauthorized access are the already mentioned authentication mechanism of the componentes themselves, the
+\emph{complete mediation} principle as well as the authentication rules of the users of the \emph{authorization and object management}
+subsystem.
 
 
 \subsection{Non-Repudiation}
+The goal of non-repudiation is directly linked to data integrity of the auditing system. As this subsystem is responsible for tracking
+all authorization requests and the respective results it is clearly replicable who wanted to access what and when.
+
+As concerns the \emph{authorization and object management} it will be logged locally which changes were made by whom and when to ensure
+this goal. The log shall be in a way that it is possible to visiualize the full change-history of a certain record.
+
+
+\subsection{Availability}
+Availability is an important safety objective as a system unavailability means a fallback to another authorization system (if any at all)
+which will certainly mean safety and security detriments. For this sake the core components shall be operated redundantly.
+
+The \emph{permission-check-provider} will be grouped in a cluster with one cluster manager and several slaves which carry
+out the load assigned by the manager. A similar configuration is intended for the \emph{authorization and object management} 
+which is additionally arranged in different shards (horizontal partitions) to increase performance.
+
+With reduced effort but still to remain (practically) immune to loosing the non-repudation-property also the \emph{auditing} subsystem
+will have a active/passive redundancy fallback mechanism in case of a failure within the primary unit. The similar principle
+will be applied to the \emph{secured object} subsystem of each object and eventually there must be at least one terminal per zone.
+
+Overall availability will also be supported by an active supervisory system, emergency backup plans and regular health-checks
+conducted on the components to reduce downtime even more.
 
 
 \section{lab1b - Interface Definitions}
