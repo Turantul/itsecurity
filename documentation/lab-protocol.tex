@@ -92,13 +92,13 @@ Similar to \emph{authorization}, authenticity is important for intra- and inter-
 ensure authenticity the \emph{complete mediation} principle provides support to a comprehensive certificate-based authentication
 system. These certificates are managed and distributed by a centralized certificate server which will be described later.
 
-The most vulnerable spot are the external interfaces to the \emph{authorization and object management} as an intruder could get
-a) information about the access rights (confidentiality) or b) change any of these data (integrity). Therefore it is important to impose
+The most vulnerable spot are the external interfaces of the \emph{authorization and object management} as an intruder could get
+a) information about the access rights (confidentiality) and b) change any of these data (integrity). Therefore it is important to impose
 a strict authentication and autorization policy here.
 
 Functional authentication will basically be realized using a RFID-chip each employee or person who wishes to gain access has to carry.
 In normal situations the person to be authorized has to put the chip onto or in front of a reader and provide his six digit pin
-(which has to be changed every six months). There will also be the possibility to lock a chip similar to a credit card if lost.
+(which has to be changed every six months). There will also be the possibility to lock a chip if lost similar to a credit card.
 For critical secured objects an additional iris-scan will be conducted and compared to the data stored on the chip.
 More information is to follow in a later chapter.
 
@@ -137,7 +137,7 @@ which is additionally arranged in different shards (horizontal partitions) to in
 
 With reduced effort but still to remain (practically) immune to loosing the non-repudation-property also the \emph{auditing} subsystem
 will have a active/passive redundancy fallback mechanism in case of a failure within the primary unit. The similar principle
-will be applied to the \emph{secured object} subsystem of each object and eventually there must be at least one terminal per zone.
+will be applied to the \emph{secured object} subsystem of each object. Eventually there must be at least one terminal per zone.
 
 Overall availability will also be supported by an active supervisory system, emergency backup plans and regular health-checks
 conducted on the components to reduce downtime even more.
