@@ -79,8 +79,7 @@ of the targets has no impact on their importance.
 \subsection{Authorization}
 Despite the fact that authorization represents the basic functionality of this system, this goal is also
 an important non-functional issue concerning the communication of the different components themselves. Consequently, all components,
-especially those outside of immediate control, but also those within system boundaries are subject to strict
-authorization.
+especially those outside of immediate control, but also those within system boundaries are subject to strict authorization.
 
 A strategy to achieve this goal is to follow the \emph{complete mediation} design principle which states that each and
 every request needs to be verified instead of keeping a cached authorization result. As such, the performance might suffer
@@ -106,7 +105,8 @@ More information is to follow in a later chapter.
 \subsection{Integrity}
 Data integrity is partially guaranteed by the rigid authentication and authorization mechanisms present within and around the system.
 Naturally this goal plays an important role wherever data is stored (which is the \emph{auditing} and \emph{authorization and object management}
-component in this system). Checksums allow the detection of illegitimate changes to these data.
+component in this system). Checksums allow the detection of illegitimate changes to these data. As the authorization storage is held
+redundantly (see later) changes to single instances can easily be detected and reported.
 
 The most important card against alteration of communication data is the application of encrypted protocols everywhere, even within
 secured boundaries.
@@ -115,7 +115,7 @@ secured boundaries.
 \subsection{Confidentiality}
 As with integrity, the fact that all communication happens in an encrypted way ensures the important confidentiality goal. Additional
 measures to avoid unauthorized access are the already mentioned authentication mechanism of the componentes themselves, the
-\emph{complete mediation} principle as well as the authentication rules of the users of the \emph{authorization and object management}
+\emph{complete mediation} principle as well as the authentication rules for the users of the \emph{authorization and object management}
 subsystem.
 
 
@@ -123,12 +123,13 @@ subsystem.
 The goal of non-repudiation is directly linked to data integrity of the auditing system. As this subsystem is responsible for tracking
 all authorization requests and the respective results it is clearly replicable who wanted to access what and when.
 
-As concerns the \emph{authorization and object management} it will be logged locally which changes were made by whom and when to ensure
-this goal. The log shall be in a way that it is possible to visiualize the full change-history of a certain record.
+As concerns the \emph{authorization and object management} it will be logged locally which changes were made by whom and when in
+order to ensure this goal. The log shall be written in a way that it is possible to visiualize the full change-history of a
+certain record.
 
 
 \subsection{Availability}
-Availability is an important safety objective as a system unavailability means a fallback to another authorization system (if any at all)
+Availability is an important safety objective as a system unavailability requires a fallback to another authorization system (if any at all)
 which will certainly mean safety and security detriments. For this sake the core components shall be operated redundantly.
 
 The \emph{permission-check-provider} will be grouped in a cluster with one cluster manager and several slaves which carry
@@ -137,10 +138,12 @@ which is additionally arranged in different shards (horizontal partitions) to in
 
 With reduced effort but still to remain (practically) immune to loosing the non-repudation-property also the \emph{auditing} subsystem
 will have a active/passive redundancy fallback mechanism in case of a failure within the primary unit. The similar principle
-will be applied to the \emph{secured object} subsystem of each object. Eventually there must be at least one terminal per zone.
+will be applied to the \emph{secured object} subsystem of each object and the \emph{notification system} (as it is only there
+to forward information and thus error-prone to a lesser extend). Eventually there must be at least one terminal per zone. The same
+requirements apply to external \emph{terminal} and \emph{secured object} subsystems.
 
-Overall availability will also be supported by an active supervisory system, emergency backup plans and regular health-checks
-conducted on the components to reduce downtime even more.
+Overall availability will also be supported by an active supervisory system to detect failures, emergency backup plans to reduce downtime
+and regular health-checks conducted on all internal components to prevent failure at all, at least in certain cases.
 
 
 \section{lab1b - Interface Definitions}
