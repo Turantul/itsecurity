@@ -89,7 +89,7 @@ a bit but regarding security this is a must.
 \subsection{Authenticity}
 Similar to \emph{authorization}, authenticity is important for intra- and inter-communication of all components. To
 ensure authenticity the \emph{complete mediation} principle provides support to a comprehensive certificate-based authentication
-system. These certificates are managed and distributed by a centralized certificate server which will be described later.
+system. These certificates are managed and replaced at regular intervals.
 
 The most vulnerable spot are the external interfaces of the \emph{authorization and object management} as an intruder could get
 a) information about the access rights (confidentiality) and b) change any of these data (integrity). Therefore it is important to impose
@@ -100,6 +100,10 @@ In normal situations the person to be authorized has to put the chip onto or in 
 (which has to be changed every six months). There will also be the possibility to lock a chip if lost similar to a credit card.
 For critical secured objects an additional iris-scan will be conducted and compared to the data stored on the chip.
 More information is to follow in a later chapter.
+
+Generally no component in the system must ever trust any component from beyond the border. The possibility is always there that
+it was replaced or reconfigured to act in a malicious way. The same goes for \emph{secured objects} as it is much easier to
+fake a terminal than this component.
 
 
 \subsection{Integrity}
@@ -147,6 +151,13 @@ and regular health-checks conducted on all internal components to prevent failur
 
 
 \section{lab1b - Interface Definitions}
+
+Tarpit sodass man nicht Brute-forcen kann
+
+Authorization and Object Management hat die Zertifikate der Secured Objects und eventuell auch Terminals (zur Authentifizierung)
+
+Was muss dem Gesetz nach gelogged werden?
+
 
 \section{lab1c - Security Analysis}
 
