@@ -36,10 +36,15 @@ public class ServerCommandHandler extends Thread {
 		}
 	}
 	
-	public PermissionCheckRequestResponse handleRequest(PermissionCheckRequest request){
+	private PermissionCheckRequestResponse handleRequest(PermissionCheckRequest request){
 		System.out.println("Message: "+request.getMessage());
 		PermissionCheckRequestResponse ret = new PermissionCheckRequestResponse();
-		ret.setResult(true);
+		System.out.println("Calling pcp");
+		ret.setResult(server.getPermissionCheckProvider().checkPermission(
+				request.getUserId(), request.getUserAuth(),
+				request.getTerminalId(), request.getTerminalAuth(),
+				request.getIrisData()));
+		System.out.println("Result: "+ret.getResult());
 		return ret;
 	}
 	

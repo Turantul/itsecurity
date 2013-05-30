@@ -68,10 +68,11 @@ public class Client
                 if(in.startsWith("!test")){
                 	String split[] = in.split(" ");
                 	String message = "Hello World!";
-                	if(split.length>1){
-                		message = split[1];
-                	}
                 	PermissionCheckRequest request = new PermissionCheckRequest();
+                	if(split.length==3){
+                		request.setUserId(Integer.parseInt(split[1]));
+                		request.setTerminalId(Integer.parseInt(split[2]));
+                	}
                 	request.setMessage(message);
                 	Socket socket = new Socket(serverAddress, serverPort);
                 	ObjectOutputStream socketout = new ObjectOutputStream(socket.getOutputStream());

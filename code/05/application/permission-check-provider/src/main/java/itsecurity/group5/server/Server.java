@@ -1,11 +1,13 @@
 package itsecurity.group5.server;
 
+import itsecurity.group5.server.authobj.AuthObjManagement;
 import itsecurity.group5.server.thread.ServerThread;
 
 public class Server
 {
 	private ServerThread serverthread = new ServerThread();
 	private int port;
+	private PermissionCheckProvider pcp = new PermissionCheckProviderImpl();
 	
     public static void main(String[] args)
     {
@@ -33,5 +35,9 @@ public class Server
     	}catch(Exception e){
     		e.printStackTrace();
     	}
+    }
+    
+    public PermissionCheckProvider getPermissionCheckProvider(){
+    	return pcp;
     }
 }
