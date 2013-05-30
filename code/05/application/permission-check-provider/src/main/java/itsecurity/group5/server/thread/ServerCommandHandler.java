@@ -43,7 +43,8 @@ public class ServerCommandHandler extends Thread {
 		ret.setResult(server.getPermissionCheckProvider().checkPermission(
 				request.getUserId(), request.getUserAuth(),
 				request.getTerminalId(), request.getTerminalAuth(),
-				request.getIrisData()));
+				request.getObjectId(), request.getObjectAuth(),
+				request.getPwHash(), request.getIrisData()));
 		System.out.println("Result: "+ret.getResult());
 		return ret;
 	}
