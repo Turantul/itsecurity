@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.security.cert.Certificate;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.security.cert.X509Certificate;
 
 public class ServerThread extends Thread {
     private Server server;
@@ -33,8 +36,13 @@ public class ServerThread extends Thread {
         
         while (!socket.isClosed()) {
             try {
-                Socket inSocket = socket.accept();
+                SSLSocket inSocket = (SSLSocket) socket.accept();
                 System.out.println("New connection received...");
+                
+                X509Certificate[] certs = inSocket.getSession().getPeerCertificateChain();
+                String name = certs[0].getSubjectDN().getName();
+                System.out.println("Dealing with '" + name.subSequence(3, name.indexOf(", OU=ESSE")) + "'");
+                
                 pool.execute(new ServerCommandHandler(inSocket, server));
             } catch (SocketException e) {
                 if (!socket.isClosed()) {
