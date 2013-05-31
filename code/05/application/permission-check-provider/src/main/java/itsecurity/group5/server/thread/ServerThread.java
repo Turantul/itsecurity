@@ -1,5 +1,7 @@
 package itsecurity.group5.server.thread;
 
+import itsecurity.group5.server.Server;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,7 +9,8 @@ import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import itsecurity.group5.server.Server;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 
 public class ServerThread extends Thread {
     private Server server;
@@ -18,12 +21,16 @@ public class ServerThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Server started");
+        System.out.println("Starting server...");
         try {
-            socket = new ServerSocket(port);
+            socket = SSLServerSocketFactory.getDefault().createServerSocket(port);
+            ((SSLServerSocket) socket).setNeedClientAuth(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        System.out.println("Listening to requests...");
+        
         while (!socket.isClosed()) {
             try {
                 Socket inSocket = socket.accept();

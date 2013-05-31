@@ -4,7 +4,10 @@ import itsecurity.group5.secobj.SecuredObject;
 import itsecurity.group5.secobj.SecuredObjectSocketImpl;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
 public class Client {
     private SecuredObject secObj;
@@ -13,16 +16,34 @@ public class Client {
         if (args.length != 3) {
             System.out.println("Wrong usage: <serverAddress> <serverPort> <ObjectId>");
         } else {
-            Integer serverPort = Integer.parseInt(args[1]);
             String serverAddress = args[0];
+            Integer serverPort = Integer.parseInt(args[1]);
             Integer objectId = Integer.parseInt(args[2]);
             new Client(serverAddress, serverPort, objectId);
         }
     }
 
     public Client(String serverAddress, Integer serverPort, Integer objectId) {
+        loadProperties();
+        
         this.secObj = new SecuredObjectSocketImpl(serverAddress, serverPort, objectId);
         startConsole();
+    }
+    
+    private void loadProperties() {
+        try {
+            Properties properties = new Properties();
+            InputStream stream = getClass().getClassLoader().getResourceAsStream("config.properties");
+            properties.load(stream);
+            stream.close();
+    
+            for (Object key : properties.keySet()) {
+                System.setProperty(key.toString(), properties.getProperty(key.toString()));
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading properties");
+            System.exit(-1);
+        }
     }
 
     private void startConsole() {

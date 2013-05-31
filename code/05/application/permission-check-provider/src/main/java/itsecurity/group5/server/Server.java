@@ -1,7 +1,10 @@
 package itsecurity.group5.server;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
 import itsecurity.group5.server.thread.ServerThread;
 
@@ -22,11 +25,30 @@ public class Server {
 
     public Server(Integer port) {
         this.port = port;
+        
+        loadProperties();
+        
         initialize();
         startConsole();
     }
+    
+    private void loadProperties() {
+        try {
+            Properties properties = new Properties();
+            InputStream stream = getClass().getClassLoader().getResourceAsStream("config.properties");
+            properties.load(stream);
+            stream.close();
+            
+            for (Object key : properties.keySet()) {
+                System.setProperty(key.toString(), properties.getProperty(key.toString()));
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading properties");
+            System.exit(-1);
+        }
+    }
 
-    public void initialize() {
+    private void initialize() {
         try {
             serverthread.setPort(port);
             serverthread.setServer(this);

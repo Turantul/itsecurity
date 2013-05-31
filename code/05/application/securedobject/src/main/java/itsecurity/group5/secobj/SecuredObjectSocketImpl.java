@@ -7,6 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javax.net.ssl.SSLSocketFactory;
+
 public class SecuredObjectSocketImpl implements SecuredObject {
     private int serverPort;
     private Integer objectId;
@@ -32,7 +34,7 @@ public class SecuredObjectSocketImpl implements SecuredObject {
         request.setIrisData(irisData);
         
         try {
-            Socket socket = new Socket(serverAddress, serverPort);
+            Socket socket = SSLSocketFactory.getDefault().createSocket(serverAddress, serverPort);
             ObjectOutputStream socketout = new ObjectOutputStream(socket.getOutputStream());
             socketout.writeObject(request);
             
