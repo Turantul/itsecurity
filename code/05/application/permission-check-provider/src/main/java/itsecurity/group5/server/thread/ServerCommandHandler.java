@@ -9,7 +9,7 @@ import itsecurity.group5.common.beans.PermissionCheckRequest;
 import itsecurity.group5.common.beans.PermissionCheckRequestResponse;
 import itsecurity.group5.server.Server;
 
-public class ServerCommandHandler extends Thread {
+public class ServerCommandHandler implements Runnable {
     private Socket socket;
     private Server server;
 
@@ -24,7 +24,9 @@ public class ServerCommandHandler extends Thread {
         try {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             PermissionCheckRequest input = (PermissionCheckRequest) in.readObject();
+
             PermissionCheckRequestResponse response = handleRequest(input);
+
             ObjectOutputStream socketout = new ObjectOutputStream(socket.getOutputStream());
             socketout.writeObject(response);
         } catch (IOException e) {

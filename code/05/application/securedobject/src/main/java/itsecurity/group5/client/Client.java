@@ -47,6 +47,9 @@ public class Client {
                             case "!exit":
                                 System.out.println("Ends the management program");
                                 break;
+                            case "!test":
+                                System.out.println("Usage: <UserID> <TerminalID>");
+                                break;
                             default:
                                 System.out.println("Command unknown. Try !help");
                         }
@@ -59,14 +62,11 @@ public class Client {
                 }
                 if (in.startsWith("!test")) {
                     String split[] = in.split(" ");
-                    String message = "Hello World!";
                     if (split.length == 3) {
-                        Boolean response =
-                            secObj.checkPermission(Integer.parseInt(split[1]), null, Integer.parseInt(split[2]), null,
-                                "test", null);
+                        Boolean response = secObj.checkPermission(Integer.parseInt(split[1]), null, Integer.parseInt(split[2]), null, "test", null);
+                        System.out.println("The autorization was " + (response ? "successful" : "unsuccessful") + ".");
                     }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

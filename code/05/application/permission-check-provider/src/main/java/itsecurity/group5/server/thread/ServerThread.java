@@ -3,6 +3,9 @@ package itsecurity.group5.server.thread;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import itsecurity.group5.server.Server;
 
@@ -10,6 +13,8 @@ public class ServerThread extends Thread {
     private Server server;
     private ServerSocket socket;
     private int port;
+    
+    private ExecutorService pool = Executors.newCachedThreadPool();
 
     @Override
     public void run() {
@@ -22,9 +27,13 @@ public class ServerThread extends Thread {
         while (!socket.isClosed()) {
             try {
                 Socket inSocket = socket.accept();
-                System.out.println("new connection");
-                new ServerCommandHandler(inSocket, server).start();
-            } catch (Exception e) {
+                System.out.println("New connection received...");
+                pool.execute(new ServerCommandHandler(inSocket, server));
+            } catch (SocketException e) {
+                if (!socket.isClosed()) {
+                    e.printStackTrace();
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -39,9 +48,9 @@ public class ServerThread extends Thread {
     }
 
     public void shutdown() {
-        System.out.println("Shutdown ManagementThread");
         try {
             socket.close();
+            pool.shutdown();
         } catch (IOException e) {
             e.printStackTrace();
         }
