@@ -27,26 +27,26 @@ public class SecuredObjectSocketImpl implements SecuredObject {
         request.setUserAuth(userAuth);
         request.setTerminalId(terminalId);
         request.setTerminalAuth(terminalAuth);
-        
+
         // Objects adds its own information to requestdata from Terminal
         request.setObjectId(objectId);
         request.setObjectAuth(null);
         request.setIrisData(irisData);
-        
+
         try {
             Socket socket = SSLSocketFactory.getDefault().createSocket(serverAddress, serverPort);
             ObjectOutputStream socketout = new ObjectOutputStream(socket.getOutputStream());
             socketout.writeObject(request);
-            
+
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             PermissionCheckRequestResponse response = (PermissionCheckRequestResponse) in.readObject();
             socket.close();
-            
+
             return response.getResult();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return false;
     }
 }

@@ -25,18 +25,18 @@ public class Client {
 
     public Client(String serverAddress, Integer serverPort, Integer objectId) {
         loadProperties();
-        
+
         this.secObj = new SecuredObjectSocketImpl(serverAddress, serverPort, objectId);
         startConsole();
     }
-    
+
     private void loadProperties() {
         try {
             Properties properties = new Properties();
             InputStream stream = getClass().getClassLoader().getResourceAsStream("config.properties");
             properties.load(stream);
             stream.close();
-    
+
             for (Object key : properties.keySet()) {
                 System.setProperty(key.toString(), properties.getProperty(key.toString()));
             }
