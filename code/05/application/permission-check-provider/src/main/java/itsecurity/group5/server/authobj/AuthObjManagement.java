@@ -9,7 +9,6 @@ import java.util.Map;
 //For testing purposes
 public class AuthObjManagement {
     private List<Integer> users;
-    private Map<Integer, String> userPasswort;
     private Map<Integer, Byte[]> userIrisData;
     private Map<Integer, List<Integer>> userZones;
     private List<Integer> terminals;
@@ -21,7 +20,6 @@ public class AuthObjManagement {
 
     public AuthObjManagement() {
         users = new ArrayList<Integer>();
-        userPasswort = new HashMap<Integer, String>();
         userIrisData = new HashMap<Integer, Byte[]>();
         terminals = new ArrayList<Integer>();
         userZones = new HashMap<Integer, List<Integer>>();
@@ -30,29 +28,9 @@ public class AuthObjManagement {
         objects = new ArrayList<Integer>();
         objectZones = new HashMap<Integer, List<Integer>>();
         zoneLevel = new HashMap<Integer, Integer>();
-        initUsers();
         initTerminals();
         initZones();
         initObjects();
-    }
-
-    // User Test Data
-    private void initUsers() {
-        users.add(1);
-        userZones.put(1, new ArrayList<Integer>(Arrays.asList(201)));
-        userPasswort.put(1, "test");
-        users.add(2);
-        userZones.put(2, new ArrayList<Integer>(Arrays.asList(201, 202)));
-        userPasswort.put(2, "test");
-        users.add(3);
-        userZones.put(3, new ArrayList<Integer>(Arrays.asList(201, 202, 203)));
-        userPasswort.put(3, "test");
-        users.add(4);
-        userZones.put(4, new ArrayList<Integer>(Arrays.asList(201, 202, 203, 204)));
-        userPasswort.put(4, "test");
-        users.add(5);
-        userZones.put(5, new ArrayList<Integer>(Arrays.asList(201, 202, 203, 204, 205)));
-        userPasswort.put(5, "test");
     }
 
     // Terminal Test Data
@@ -117,32 +95,23 @@ public class AuthObjManagement {
         return false;
     }
 
-    public Boolean authorizeUser(Integer user, Integer zone, String hash, Byte[] irisData) {
+    public Boolean authorizeUser(Integer user, Integer zone, Byte[] irisData) {
         System.out.println("Authorizing User: " + user + ", " + zone);
         if (users.contains(user)) {
             if (userZones.containsKey(user)) {
                 List<Integer> userZoneList = userZones.get(user);
                 if (userZoneList.contains(zone)) {
                     if (zoneLevel.get(zone) == 2) {
-                        if (verifyUserPassword(user, hash) && verifyIrisData(user, irisData)) {
+                        if (verifyIrisData(user, irisData)) {
                             return true;
                         }
                     } else if (zoneLevel.get(zone) == 1) {
-                        if (verifyUserPassword(user, hash)) {
+                        if (true) {
                             return true;
                         }
                     }
 
                 }
-            }
-        }
-        return false;
-    }
-
-    private Boolean verifyUserPassword(Integer user, String hash) {
-        if (userPasswort.containsKey(user)) {
-            if (userPasswort.get(user).equals(hash)) {
-                return true;
             }
         }
         return false;

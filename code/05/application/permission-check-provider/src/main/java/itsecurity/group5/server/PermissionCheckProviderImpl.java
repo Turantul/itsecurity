@@ -7,7 +7,7 @@ public class PermissionCheckProviderImpl implements PermissionCheckProvider {
 
     @Override
     public Boolean checkPermission(Integer userId, Byte[] userAuth, Integer terminalId, Byte[] terminalAuth, Integer objectId, Byte[] objectAuth,
-            String pwHash, Byte[] irisData) {
+            Byte[] irisData) {
         if (!authenticateObject(objectAuth, "")) {
             // Call auditing
             return false;
@@ -24,7 +24,7 @@ public class PermissionCheckProviderImpl implements PermissionCheckProvider {
         Integer zone = aom.auhtorizeTerminal(terminalId);
         if (zone != null) {
             if (aom.authorizeZone(objectId, zone)) {
-                Boolean result = aom.authorizeUser(userId, zone, pwHash, irisData);
+                Boolean result = aom.authorizeUser(userId, zone, irisData);
                 // Call auditing
                 return result;
             }

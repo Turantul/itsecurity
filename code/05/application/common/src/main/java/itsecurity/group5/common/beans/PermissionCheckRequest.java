@@ -9,7 +9,6 @@ public class PermissionCheckRequest implements Serializable{
 	private Byte[] terminalAuth;
 	private Integer objectId;
 	private Byte[] objectAuth;
-	private String pwHash;
 	private Byte[] irisData;
 	
 	private String message;
@@ -81,13 +80,4 @@ public class PermissionCheckRequest implements Serializable{
 	public void setObjectAuth(Byte[] objectAuth) {
 		this.objectAuth = objectAuth;
 	}
-
-	public String getPwHash() {
-		return pwHash;
-	}
-
-	public void setPwHash(String pwHash) {
-		this.pwHash = pwHash;
-	}
-
 }

@@ -46,7 +46,7 @@ public class ServerCommandHandler implements Runnable {
             request.getUserId(), request.getUserAuth(),
             request.getTerminalId(), request.getTerminalAuth(),
             request.getObjectId(), request.getObjectAuth(),
-            request.getPwHash(), request.getIrisData()));
+            request.getIrisData()));
         System.out.println("Result: " + ret.getResult());
         return ret;
     }

@@ -63,7 +63,7 @@ public class Client {
                 if (in.startsWith("!test")) {
                     String split[] = in.split(" ");
                     if (split.length == 3) {
-                        Boolean response = secObj.checkPermission(Integer.parseInt(split[1]), null, Integer.parseInt(split[2]), null, "test", null);
+                        Boolean response = secObj.checkPermission(Integer.parseInt(split[1]), null, Integer.parseInt(split[2]), null, null);
                         System.out.println("The autorization was " + (response ? "successful" : "unsuccessful") + ".");
                     }
                 }

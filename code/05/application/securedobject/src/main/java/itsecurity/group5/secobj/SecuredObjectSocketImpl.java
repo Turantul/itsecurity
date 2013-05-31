@@ -19,7 +19,7 @@ public class SecuredObjectSocketImpl implements SecuredObject {
     }
 
     @Override
-    public Boolean checkPermission(Integer userId, Byte[] userAuth, Integer terminalId, Byte[] terminalAuth, String pinHash, Byte[] irisData) {
+    public Boolean checkPermission(Integer userId, Byte[] userAuth, Integer terminalId, Byte[] terminalAuth, Byte[] irisData) {
         PermissionCheckRequest request = new PermissionCheckRequest();
         request.setUserId(userId);
         request.setUserAuth(userAuth);
@@ -29,7 +29,6 @@ public class SecuredObjectSocketImpl implements SecuredObject {
         // Objects adds its own information to requestdata from Terminal
         request.setObjectId(objectId);
         request.setObjectAuth(null);
-        request.setPwHash(pinHash);
         request.setIrisData(irisData);
         
         try {
