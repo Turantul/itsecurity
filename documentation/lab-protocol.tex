@@ -136,7 +136,7 @@ certain record.
 Availability is an important safety objective as a system unavailability requires a fallback to another authorization system (if any at all)
 which will certainly mean safety and security detriments. For this sake the core components shall be operated redundantly.
 
-The \emph{permission-check-provider} will be grouped in a cluster with one cluster manager and several slaves which carry
+The \emph{Permission-Check-Provider} will be grouped in a cluster with one cluster manager and several slaves which carry
 out the load assigned by the manager. A similar configuration is intended for the \emph{authorization and object management} 
 which is additionally arranged in different shards (horizontal partitions) to increase performance.
 
@@ -145,6 +145,11 @@ will have a active/passive redundancy fallback mechanism in case of a failure wi
 will be applied to the \emph{secured object} subsystem of each object and the \emph{notification system} (as it is only there
 to forward information and thus error-prone to a lesser extend). Eventually there must be at least one terminal per zone. The same
 requirements apply to external \emph{terminal} and \emph{secured object} subsystems.
+
+\begin{figure}[h]
+    \centering
+    \fbox{\includegraphics[width=15cm]{./imgs/sequence1.png}}
+\end{figure}
 
 Overall availability will also be supported by an active supervisory system to detect failures, emergency backup plans to reduce downtime
 and regular health-checks conducted on all internal components to prevent failure at all, at least in certain cases.
@@ -157,6 +162,9 @@ Tarpit sodass man nicht Brute-forcen kann
 Authorization and Object Management hat die Zertifikate der Secured Objects und eventuell auch Terminals (zur Authentifizierung)
 
 Was muss dem Gesetz nach gelogged werden?
+
+
+
 
 
 \section{lab1c - Security Analysis}
