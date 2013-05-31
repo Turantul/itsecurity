@@ -2,82 +2,68 @@ package itsecurity.group5.common.beans;
 
 import java.io.Serializable;
 
-public class PermissionCheckRequest implements Serializable{
-	private Integer userId;
-	private Byte[] userAuth;
-	private Integer terminalId;
-	private Byte[] terminalAuth;
-	private Integer objectId;
-	private Byte[] objectAuth;
-	private Byte[] irisData;
-	
-	private String message;
-	
-	public PermissionCheckRequest(){
-		this.message = "Hello World!";
-	}
+public class PermissionCheckRequest implements Serializable {
+    private Integer userId;
+    private Byte[] userAuth;
+    private Integer terminalId;
+    private Byte[] terminalAuth;
+    private Integer objectId;
+    private Byte[] objectAuth;
+    private Byte[] irisData;
 
-	public String getMessage() {
-		return message;
-	}
+    public Integer getUserId() {
+        return userId;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-	public Integer getUserId() {
-		return userId;
-	}
+    public Byte[] getUserAuth() {
+        return userAuth;
+    }
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+    public void setUserAuth(Byte[] userAuth) {
+        this.userAuth = userAuth;
+    }
 
-	public Byte[] getUserAuth() {
-		return userAuth;
-	}
+    public Integer getTerminalId() {
+        return terminalId;
+    }
 
-	public void setUserAuth(Byte[] userAuth) {
-		this.userAuth = userAuth;
-	}
+    public void setTerminalId(Integer terminalId) {
+        this.terminalId = terminalId;
+    }
 
-	public Integer getTerminalId() {
-		return terminalId;
-	}
+    public Byte[] getTerminalAuth() {
+        return terminalAuth;
+    }
 
-	public void setTerminalId(Integer terminalId) {
-		this.terminalId = terminalId;
-	}
+    public void setTerminalAuth(Byte[] terminalAuth) {
+        this.terminalAuth = terminalAuth;
+    }
 
-	public Byte[] getTerminalAuth() {
-		return terminalAuth;
-	}
+    public Byte[] getIrisData() {
+        return irisData;
+    }
 
-	public void setTerminalAuth(Byte[] terminalAuth) {
-		this.terminalAuth = terminalAuth;
-	}
+    public void setIrisData(Byte[] irisData) {
+        this.irisData = irisData;
+    }
 
-	public Byte[] getIrisData() {
-		return irisData;
-	}
+    public Integer getObjectId() {
+        return objectId;
+    }
 
-	public void setIrisData(Byte[] irisData) {
-		this.irisData = irisData;
-	}
+    public void setObjectId(Integer objectId) {
+        this.objectId = objectId;
+    }
 
-	public Integer getObjectId() {
-		return objectId;
-	}
+    public Byte[] getObjectAuth() {
+        return objectAuth;
+    }
 
-	public void setObjectId(Integer objectId) {
-		this.objectId = objectId;
-	}
-
-	public Byte[] getObjectAuth() {
-		return objectAuth;
-	}
-
-	public void setObjectAuth(Byte[] objectAuth) {
-		this.objectAuth = objectAuth;
-	}
+    public void setObjectAuth(Byte[] objectAuth) {
+        this.objectAuth = objectAuth;
+    }
 }

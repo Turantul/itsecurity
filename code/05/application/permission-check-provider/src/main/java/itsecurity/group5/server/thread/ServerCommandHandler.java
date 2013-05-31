@@ -39,9 +39,9 @@ public class ServerCommandHandler implements Runnable {
     }
 
     private PermissionCheckRequestResponse handleRequest(PermissionCheckRequest request) {
-        System.out.println("Message: " + request.getMessage());
         PermissionCheckRequestResponse ret = new PermissionCheckRequestResponse();
-        System.out.println("Calling pcp");
+        
+        System.out.println("Authorizing user...");
         ret.setResult(server.getPermissionCheckProvider().checkPermission(
             request.getUserId(), request.getUserAuth(),
             request.getTerminalId(), request.getTerminalAuth(),
