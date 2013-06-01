@@ -2,14 +2,14 @@ package itsecurity.group5.common.beans;
 
 import java.io.Serializable;
 
-public class PermissionCheckRequestResponse implements Serializable{
-	private Boolean result = false;
+public class PermissionCheckRequestResponse implements Serializable {
+    private boolean result = false;
 
-	public Boolean getResult() {
-		return result;
-	}
+    public boolean getResult() {
+        return result;
+    }
 
-	public void setResult(Boolean result) {
-		this.result = result;
-	}
+    public void setResult(boolean result) {
+        this.result = result;
+    }
 }

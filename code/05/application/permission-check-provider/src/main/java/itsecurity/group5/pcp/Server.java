@@ -1,12 +1,10 @@
-package itsecurity.group5.server;
+package itsecurity.group5.pcp;
+
+import itsecurity.group5.common.helper.PropertyHelper;
+import itsecurity.group5.pcp.thread.ServerThread;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Properties;
-
-import itsecurity.group5.server.thread.ServerThread;
 
 public class Server {
     private ServerThread serverthread = new ServerThread();
@@ -14,7 +12,7 @@ public class Server {
     private PermissionCheckProvider pcp = new PermissionCheckProviderImpl();
 
     public static void main(String[] args) {
-        // Read Config and Setup server
+        // Read config and setup server
 
         if (args.length != 1) {
             System.out.println("Wrong usage: <Port>");
@@ -26,26 +24,10 @@ public class Server {
     public Server(Integer port) {
         this.port = port;
         
-        loadProperties();
+        PropertyHelper.loadProperties();
         
         initialize();
         startConsole();
-    }
-    
-    private void loadProperties() {
-        try {
-            Properties properties = new Properties();
-            InputStream stream = getClass().getClassLoader().getResourceAsStream("config.properties");
-            properties.load(stream);
-            stream.close();
-            
-            for (Object key : properties.keySet()) {
-                System.setProperty(key.toString(), properties.getProperty(key.toString()));
-            }
-        } catch (IOException e) {
-            System.out.println("Error loading properties");
-            System.exit(-1);
-        }
     }
 
     private void initialize() {

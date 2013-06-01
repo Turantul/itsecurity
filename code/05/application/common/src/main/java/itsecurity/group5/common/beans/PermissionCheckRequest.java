@@ -3,67 +3,40 @@ package itsecurity.group5.common.beans;
 import java.io.Serializable;
 
 public class PermissionCheckRequest implements Serializable {
-    private Integer userId;
-    private Byte[] userAuth;
-    private Integer terminalId;
-    private Byte[] terminalAuth;
-    private Integer objectId;
-    private Byte[] objectAuth;
-    private Byte[] irisData;
+    private Authentication user;
+    private byte[] irisData;
+    private Authentication terminal;
+    private Authentication object;
 
-    public Integer getUserId() {
-        return userId;
+    public Authentication getUser() {
+        return user;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUser(Authentication user) {
+        this.user = user;
     }
 
-    public Byte[] getUserAuth() {
-        return userAuth;
-    }
-
-    public void setUserAuth(Byte[] userAuth) {
-        this.userAuth = userAuth;
-    }
-
-    public Integer getTerminalId() {
-        return terminalId;
-    }
-
-    public void setTerminalId(Integer terminalId) {
-        this.terminalId = terminalId;
-    }
-
-    public Byte[] getTerminalAuth() {
-        return terminalAuth;
-    }
-
-    public void setTerminalAuth(Byte[] terminalAuth) {
-        this.terminalAuth = terminalAuth;
-    }
-
-    public Byte[] getIrisData() {
+    public byte[] getIrisData() {
         return irisData;
     }
 
-    public void setIrisData(Byte[] irisData) {
+    public void setIrisData(byte[] irisData) {
         this.irisData = irisData;
     }
 
-    public Integer getObjectId() {
-        return objectId;
+    public Authentication getTerminal() {
+        return terminal;
     }
 
-    public void setObjectId(Integer objectId) {
-        this.objectId = objectId;
+    public void setTerminal(Authentication terminal) {
+        this.terminal = terminal;
     }
 
-    public Byte[] getObjectAuth() {
-        return objectAuth;
+    public Authentication getObject() {
+        return object;
     }
 
-    public void setObjectAuth(Byte[] objectAuth) {
-        this.objectAuth = objectAuth;
+    public void setObject(Authentication object) {
+        this.object = object;
     }
 }
