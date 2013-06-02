@@ -1,5 +1,7 @@
 package itsecurity.group5.aom;
 
+import itsecurity.group5.audit.Auditing;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,7 +35,7 @@ public class AuthObjManagement {
         initTerminals();
         initZones();
         initObjects();
-        initIris(); 
+        initIris();
     }
 
     // User Test Data
@@ -78,23 +80,21 @@ public class AuthObjManagement {
         zoneLevel.put(204, 2);
         zones.add(205);
         zoneLevel.put(205, 1);
-//        zoneLevel.put(201, 1);
-        
+        // zoneLevel.put(201, 1);
     }
 
     // Secure Object Test Data
     private void initObjects() {
         objects.add(301);
-        objectZones.put(301, new ArrayList<Integer>(Arrays.asList(201, 202, 203, 204,205)));
-//        objectZones.put(301, new ArrayList<Integer>(Arrays.asList(201, 202, 203, 204)));
+        objectZones.put(301, new ArrayList<Integer>(Arrays.asList(201, 202, 203, 204, 205)));
+        // objectZones.put(301, new ArrayList<Integer>(Arrays.asList(201, 202, 203, 204)));
         objects.add(305);
         objectZones.put(305, new ArrayList<Integer>(Arrays.asList(205)));
     }
-    
-    private void initIris(){
-    	byte[] b1 = {(byte)0x03, (byte)0x00, (byte)0x00, (byte)0x00};
-    	
-    	userIrisData.put(3,b1);
+
+    private void initIris() {
+        byte[] b1 = { (byte) 0x03, (byte) 0x00, (byte) 0x00, (byte) 0x00 };
+        userIrisData.put(3, b1);
     }
 
     public Integer auhtorizeTerminal(Integer terminal) {
@@ -103,7 +103,7 @@ public class AuthObjManagement {
                 return terminalZones.get(terminal);
             }
         }
-        
+
         return null;
     }
 
@@ -115,7 +115,7 @@ public class AuthObjManagement {
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -124,10 +124,8 @@ public class AuthObjManagement {
             if (userZones.containsKey(user)) {
                 List<Integer> userZoneList = userZones.get(user);
                 if (userZoneList.contains(zone)) {
-                	System.out.println("Zonelevel is: " +zoneLevel.get(zone).toString());
                     if (zoneLevel.get(zone) == 2) {
                         if (verifyIrisData(user, irisData)) {
-                        	
                             return true;
                         }
                     } else if (zoneLevel.get(zone) == 1) {
@@ -136,20 +134,18 @@ public class AuthObjManagement {
                 }
             }
         }
+        
         return false;
     }
 
     private boolean verifyIrisData(Integer user, byte[] irisData) {
-    	System.out.println("Trying to verify iris data:" + irisData.hashCode());
-    	
-    	if (userIrisData.containsKey(user)) {
-    		//changed here, because checking of bytearrays is done this way, otherwise false
-            if (Arrays.equals(userIrisData.get(user), irisData))
-            		/*userIrisData.get(user).equals(irisData))*/ {
-            	System.out.println("checking verification" + userIrisData.get(user).hashCode());
+        Auditing.logInfo("Verifying iris data: " + irisData.hashCode());
+        if (userIrisData.containsKey(user)) {
+            if (Arrays.equals(userIrisData.get(user), irisData)) {
                 return true;
             }
         }
+        
         return false;
     }
 }
