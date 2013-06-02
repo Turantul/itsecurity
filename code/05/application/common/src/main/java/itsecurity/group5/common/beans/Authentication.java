@@ -14,14 +14,21 @@ public class Authentication implements Serializable {
     private byte[] signature;
     private X509Certificate certificate;
     private String text;
+    private byte[] irisData;
 
     public byte[] calculateSignature(PrivateKey key) throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException,
         SignatureException {
         if (text == null || text.equals("")) {
             return null;
         }
+        text.replaceAll(" ", "");
 
         String name = certificate.getSubjectDN().getName();
+        
+        if (irisData != null && irisData.length > 0) {
+            text += " " + new String(irisData);
+        }
+        
         text += " " + name.subSequence(3, name.indexOf(", OU=ESSE"));
         byte[] data = text.getBytes("UTF8");
 
@@ -41,7 +48,7 @@ public class Authentication implements Serializable {
         try {
             //Check certificate validity
             certificate.checkValidity();
-            //Additionally check certificate chain - i.e. if the root is trusted
+            //TODO: Additionally check certificate chain - i.e. if the root is trusted
 
             //Check content of the text
             String name = certificate.getSubjectDN().getName();
@@ -62,6 +69,12 @@ public class Authentication implements Serializable {
             if (sig.verify(signature)) {
                 //Extract id from certificate
                 id = Integer.parseInt(name.subSequence(3, name.indexOf(", OU=ESSE")).toString().split(" ")[1]);
+                
+                //Extract irisData if available
+                if (text.split(" ").length > 3) {
+                    irisData = text.split(" ")[1].getBytes();
+                }
+                
                 return true;
             }
         } catch (Exception e) {
@@ -93,5 +106,13 @@ public class Authentication implements Serializable {
 
     public void setCertificate(X509Certificate certificate) {
         this.certificate = certificate;
+    }
+
+    public byte[] getIrisData() {
+        return irisData;
+    }
+
+    public void setIrisData(byte[] irisData) {
+        this.irisData = irisData;
     }
 }

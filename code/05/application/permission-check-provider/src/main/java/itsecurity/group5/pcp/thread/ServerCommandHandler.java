@@ -1,13 +1,12 @@
 package itsecurity.group5.pcp.thread;
 
+import itsecurity.group5.common.beans.PermissionCheckRequest;
+import itsecurity.group5.pcp.Server;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
-import itsecurity.group5.common.beans.PermissionCheckRequest;
-import itsecurity.group5.common.beans.PermissionCheckRequestResponse;
-import itsecurity.group5.pcp.Server;
 
 public class ServerCommandHandler implements Runnable {
     private Socket socket;
@@ -25,7 +24,7 @@ public class ServerCommandHandler implements Runnable {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             PermissionCheckRequest input = (PermissionCheckRequest) in.readObject();
 
-            PermissionCheckRequestResponse response = handleRequest(input);
+            boolean response = server.getPermissionCheckProvider().checkPermission(input);
 
             ObjectOutputStream socketout = new ObjectOutputStream(socket.getOutputStream());
             socketout.writeObject(response);
@@ -36,11 +35,5 @@ public class ServerCommandHandler implements Runnable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    private PermissionCheckRequestResponse handleRequest(PermissionCheckRequest request) {
-        PermissionCheckRequestResponse ret = new PermissionCheckRequestResponse();
-        ret.setResult(server.getPermissionCheckProvider().checkPermission(request));
-        return ret;
     }
 }

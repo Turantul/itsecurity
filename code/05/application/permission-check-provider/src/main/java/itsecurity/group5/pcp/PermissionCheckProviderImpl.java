@@ -25,7 +25,7 @@ public class PermissionCheckProviderImpl implements PermissionCheckProvider {
         Integer zone = aom.auhtorizeTerminal(request.getTerminal().getId());
         if (zone != null) {
             if (aom.authorizeZone(request.getObject().getId(), zone)) {
-                boolean result = aom.authorizeUser(request.getUser().getId(), zone, request.getIrisData());
+                boolean result = aom.authorizeUser(request.getUser().getId(), zone, request.getUser().getIrisData());
 
                 if (result) {
                     Auditing.logInfo("The authentication was successful. User: " + request.getUser().getId() + ", Zone: " + zone);

@@ -2,7 +2,6 @@ package itsecurity.group5.so;
 
 import itsecurity.group5.common.beans.Authentication;
 import itsecurity.group5.common.beans.PermissionCheckRequest;
-import itsecurity.group5.common.beans.PermissionCheckRequestResponse;
 import itsecurity.group5.common.helper.SignatureHelper;
 
 import java.io.IOException;
@@ -15,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.UUID;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -25,6 +25,12 @@ public class SecuredObjectSocketImpl implements SecuredObject {
     public SecuredObjectSocketImpl(String serverAddress, Integer serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
+    }
+
+    @Override
+    public UUID initateAuthorizationSession(PermissionCheckRequest request) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -43,14 +49,15 @@ public class SecuredObjectSocketImpl implements SecuredObject {
                 socketout.writeObject(request);
 
                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                PermissionCheckRequestResponse response = (PermissionCheckRequestResponse) in.readObject();
+                Boolean response = (Boolean) in.readObject();
                 socket.close();
 
-                return response.getResult();
+                return response;
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | SignatureException e1) {
+        } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
+                | SignatureException e1) {
             e1.printStackTrace();
         }
 
