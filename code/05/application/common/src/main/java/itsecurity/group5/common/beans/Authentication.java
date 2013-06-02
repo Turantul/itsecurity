@@ -33,7 +33,7 @@ public class Authentication implements Serializable {
         return signature;
     }
 
-    public boolean verifySignature() {
+    public boolean verifySignature(String content) {
         if (text == null || text.equals("") || signature == null || signature.length == 0) {
             return false;
         }
@@ -45,6 +45,9 @@ public class Authentication implements Serializable {
 
             //Check content of the text
             String name = certificate.getSubjectDN().getName();
+            if (content != null && !content.equals("") && !text.startsWith(content)) {
+                return false;
+            }
             if (!text.endsWith(name.subSequence(3, name.indexOf(", OU=ESSE")).toString())) {
                 return false;
             }

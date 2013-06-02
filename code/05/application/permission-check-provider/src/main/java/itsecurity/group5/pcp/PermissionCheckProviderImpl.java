@@ -9,15 +9,15 @@ public class PermissionCheckProviderImpl implements PermissionCheckProvider {
 
     @Override
     public boolean checkPermission(PermissionCheckRequest request) {
-        if (!request.getObject().verifySignature()) {
+        if (!request.getObject().verifySignature("Authentication")) {
             Auditing.logError("Authentication of object failed: " + request.getObject().getCertificate().getIssuerDN().getName());
             return false;
         }
-        if (!request.getTerminal().verifySignature()) {
+        if (!request.getTerminal().verifySignature("Authentication")) {
             Auditing.logError("Authentication of terminal failed: " + request.getTerminal().getCertificate().getIssuerDN().getName());
             return false;
         }
-        if (!request.getUser().verifySignature()) {
+        if (!request.getUser().verifySignature("Authentication")) {
             Auditing.logError("Authentication of user failed: " + request.getUser().getCertificate().getIssuerDN().getName());
             return false;
         }
