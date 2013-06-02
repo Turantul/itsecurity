@@ -6,7 +6,6 @@ eclipse-workspace
 #=================
 #eclipse-project
 #=================
-*.project
 *.settings
 *bin
 *.springBeans
