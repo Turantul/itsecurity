@@ -1,86 +1,78 @@
 package itsecurity.group5.common.beans;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.UUID;
 
 public class Authentication implements Serializable {
     private Integer id;
-    private byte[] signature;
     private X509Certificate certificate;
     private String text;
+    private UUID uuid;
     private byte[] irisData;
+    
+    private byte[] signature;
 
-    public byte[] calculateSignature(PrivateKey key) throws InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException,
-        SignatureException {
-        if (text == null || text.equals("")) {
-            return null;
-        }
-        text.replaceAll(" ", "");
-
-        String name = certificate.getSubjectDN().getName();
-        
-        if (irisData != null && irisData.length > 0) {
-            text += " " + new String(irisData);
-        }
-        
-        text += " " + name.subSequence(3, name.indexOf(", OU=ESSE"));
-        byte[] data = text.getBytes("UTF8");
-
+    public byte[] calculateSignature(PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, CertificateEncodingException {
         Signature sig = Signature.getInstance("SHA1WithRSA");
         sig.initSign(key);
-        sig.update(data);
+
+        if (text != null && !text.equals("")) {
+            sig.update(text.getBytes());
+        }
+        if (uuid != null) {
+            sig.update(uuid.toString().getBytes());
+        }
+        if (irisData != null && irisData.length > 0) {
+            sig.update(irisData);
+        }
+        sig.update(certificate.getEncoded());
 
         signature = sig.sign();
         return signature;
     }
 
     public boolean verifySignature(String content) {
-        if (text == null || text.equals("") || signature == null || signature.length == 0) {
+        if (signature == null || signature.length == 0) {
             return false;
         }
 
         try {
-            //Check certificate validity
+            // Check certificate validity
             certificate.checkValidity();
-            //TODO: Additionally check certificate chain - i.e. if the root is trusted
-
-            //Check content of the text
-            String name = certificate.getSubjectDN().getName();
-            if (content != null && !content.equals("") && !text.startsWith(content)) {
-                return false;
-            }
-            if (!text.endsWith(name.subSequence(3, name.indexOf(", OU=ESSE")).toString())) {
-                return false;
-            }
-            
-            //Check signature
-            byte[] data = text.getBytes("UTF8");
+            // TODO: Additionally check certificate chain - i.e. if the root is trusted
 
             Signature sig = Signature.getInstance("SHA1WithRSA");
             sig.initVerify(certificate.getPublicKey());
-            sig.update(data);
+
+            if (text != null && !text.equals("")) {
+                sig.update(text.getBytes());
+            }
+            if (uuid != null) {
+                sig.update(uuid.toString().getBytes());
+            }
+            if (irisData != null && irisData.length > 0) {
+                sig.update(irisData);
+            }
+            sig.update(certificate.getEncoded());
 
             if (sig.verify(signature)) {
-                //Extract id from certificate
+                // Extract id from certificate
+                String name = certificate.getSubjectDN().getName();
                 id = Integer.parseInt(name.subSequence(3, name.indexOf(", OU=ESSE")).toString().split(" ")[1]);
-                
-                //Extract irisData if available
-                if (text.split(" ").length > 3) {
-                    irisData = text.split(" ")[1].getBytes();
-                }
-                
+
                 return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return false;
     }
 
@@ -114,5 +106,13 @@ public class Authentication implements Serializable {
 
     public void setIrisData(byte[] irisData) {
         this.irisData = irisData;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 }

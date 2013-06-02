@@ -1,18 +1,53 @@
 package itsecurity.group5.pcp;
 
+import java.util.UUID;
+
 import itsecurity.group5.aom.AuthObjManagement;
 import itsecurity.group5.audit.Auditing;
+import itsecurity.group5.common.beans.InitiateSessionRequest;
 import itsecurity.group5.common.beans.PermissionCheckRequest;
+import itsecurity.group5.common.interfaces.IPermissionCheckProvider;
 
-public class PermissionCheckProviderImpl implements PermissionCheckProvider {
+public class PermissionCheckProviderImpl implements IPermissionCheckProvider {
     private AuthObjManagement aom = new AuthObjManagement();
+    
+    private UUID uuid;
+    private Integer objectId;
+    
+    public PermissionCheckProviderImpl(String identifyer) {
+        objectId = Integer.parseInt(identifyer.split(" ")[1]);
+    }
+
+    @Override
+    public UUID initateAuthorizationSession(InitiateSessionRequest request) {
+        // Authentication of Terminal
+        if (!request.getTerminal().verifySignature("Authentication")) {
+            Auditing.logError("Authentication of terminal failed: " + request.getTerminal().getCertificate().getIssuerDN().getName());
+            return null;
+        }
+
+        // Autorization of Terminal and Zone
+        Integer zone = aom.auhtorizeTerminal(request.getTerminal().getId());
+        if (zone != null) {
+            if (aom.authorizeZone(objectId, zone)) {
+                // TODO: ensure that this number is purely random and unique systemwide
+                uuid = UUID.randomUUID();
+                return uuid;
+            }
+            else {
+                Auditing.logError("The zone '" + zone + "' is not attached to the object '" + objectId + "'.");
+            }
+        }
+        else {
+            Auditing.logError("The terminal '" + request.getTerminal().getId() + "' has no attached zone.");
+        }
+
+        return null;
+    }
 
     @Override
     public boolean checkPermission(PermissionCheckRequest request) {
-        if (!request.getObject().verifySignature("Authentication")) {
-            Auditing.logError("Authentication of object failed: " + request.getObject().getCertificate().getIssuerDN().getName());
-            return false;
-        }
+        // Authentication of Terminal and User (complete mediation)
         if (!request.getTerminal().verifySignature("Authentication")) {
             Auditing.logError("Authentication of terminal failed: " + request.getTerminal().getCertificate().getIssuerDN().getName());
             return false;
@@ -21,10 +56,16 @@ public class PermissionCheckProviderImpl implements PermissionCheckProvider {
             Auditing.logError("Authentication of user failed: " + request.getUser().getCertificate().getIssuerDN().getName());
             return false;
         }
+        
+        // Check if session ID is equal
+        if (request.getUser().getUuid().compareTo(uuid) != 0) {
+            Auditing.logError("Session has been altered. Got: " + request.getUser().getUuid() + ", Wanted: " + uuid);
+            return false;
+        }
 
         Integer zone = aom.auhtorizeTerminal(request.getTerminal().getId());
         if (zone != null) {
-            if (aom.authorizeZone(request.getObject().getId(), zone)) {
+            if (aom.authorizeZone(objectId, zone)) {
                 boolean result = aom.authorizeUser(request.getUser().getId(), zone, request.getUser().getIrisData());
 
                 if (result) {
@@ -37,7 +78,7 @@ public class PermissionCheckProviderImpl implements PermissionCheckProvider {
                 return result;
             }
             else {
-                Auditing.logError("The zone '" + zone + "' is not attached to the object '" + request.getObject().getId() + "'.");
+                Auditing.logError("The zone '" + zone + "' is not attached to the object '" + objectId + "'.");
             }
         }
         else {

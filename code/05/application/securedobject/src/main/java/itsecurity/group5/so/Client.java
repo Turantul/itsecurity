@@ -1,13 +1,14 @@
 package itsecurity.group5.so;
 
 import itsecurity.group5.common.helper.PropertyHelper;
+import itsecurity.group5.common.interfaces.IPermissionCheckProvider;
 import itsecurity.group5.so.helper.SOHelper;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class Client {
-    private SecuredObject secObj;
+    private IPermissionCheckProvider secObj;
 
     public static void main(String[] args) {
         if (args.length != 2) {

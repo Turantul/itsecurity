@@ -1,5 +1,6 @@
 package itsecurity.group5.pcp;
 
+import itsecurity.group5.audit.Auditing;
 import itsecurity.group5.common.helper.PropertyHelper;
 import itsecurity.group5.pcp.thread.ServerThread;
 
@@ -9,7 +10,6 @@ import java.io.InputStreamReader;
 public class Server {
     private ServerThread serverthread = new ServerThread();
     private int port;
-    private PermissionCheckProvider pcp = new PermissionCheckProviderImpl();
 
     public static void main(String[] args) {
         // Read config and setup server
@@ -33,7 +33,6 @@ public class Server {
     private void initialize() {
         try {
             serverthread.setPort(port);
-            serverthread.setServer(this);
             serverthread.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,7 +67,7 @@ public class Server {
                 }
 
                 if (in.equals("!exit")) {
-                    System.out.println("Shutting down the server...");
+                    Auditing.logInfo("Shutting down the server...");
                     serverthread.shutdown();
                     break;
                 }
@@ -76,9 +75,5 @@ public class Server {
                 e.printStackTrace();
             }
         }
-    }
-
-    public PermissionCheckProvider getPermissionCheckProvider() {
-        return pcp;
     }
 }

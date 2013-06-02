@@ -3,8 +3,7 @@ package itsecurity.group5.common.beans;
 import java.io.Serializable;
 
 public class InitiateSessionRequest implements Serializable {
-    private Authentication terminal;
-    private Authentication object;
+    protected Authentication terminal;
 
     public Authentication getTerminal() {
         return terminal;
@@ -12,13 +11,5 @@ public class InitiateSessionRequest implements Serializable {
 
     public void setTerminal(Authentication terminal) {
         this.terminal = terminal;
-    }
-
-    public Authentication getObject() {
-        return object;
-    }
-
-    public void setObject(Authentication object) {
-        this.object = object;
     }
 }

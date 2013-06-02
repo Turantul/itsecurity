@@ -1,26 +1,23 @@
 package itsecurity.group5.so;
 
-import itsecurity.group5.common.beans.Authentication;
+import itsecurity.group5.common.beans.InitiateSessionRequest;
 import itsecurity.group5.common.beans.PermissionCheckRequest;
-import itsecurity.group5.common.helper.SignatureHelper;
+import itsecurity.group5.common.interfaces.IPermissionCheckProvider;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.UUID;
 
 import javax.net.ssl.SSLSocketFactory;
 
-public class SecuredObjectSocketImpl implements SecuredObject {
+public class SecuredObjectSocketImpl implements IPermissionCheckProvider {
     private int serverPort;
     private String serverAddress;
+    
+    private Socket socket;
+    private ObjectOutputStream socketout;
+    private ObjectInputStream in;
 
     public SecuredObjectSocketImpl(String serverAddress, Integer serverPort) {
         this.serverAddress = serverAddress;
@@ -28,37 +25,38 @@ public class SecuredObjectSocketImpl implements SecuredObject {
     }
 
     @Override
-    public UUID initateAuthorizationSession(PermissionCheckRequest request) {
-        // TODO Auto-generated method stub
+    public UUID initateAuthorizationSession(InitiateSessionRequest request) {
+        try {
+            socket = SSLSocketFactory.getDefault().createSocket(serverAddress, serverPort);
+            socketout = new ObjectOutputStream(socket.getOutputStream());
+            socketout.writeObject(request);
+
+            in = new ObjectInputStream(socket.getInputStream());
+            UUID response = (UUID) in.readObject();
+
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         return null;
     }
 
     @Override
     public boolean checkPermission(PermissionCheckRequest request) {
+        if (socket == null || socket.isClosed()) {
+            return false;
+        }
+        
         try {
-            // Objects adds its own information to requestdata from Terminal
-            Authentication auth = new Authentication();
-            auth.setText("Authentication");
-            auth.setCertificate(SignatureHelper.getCertificate());
-            auth.calculateSignature(SignatureHelper.getKeyPair().getPrivate());
-            request.setObject(auth);
+            socketout.writeObject(request);
 
-            try {
-                Socket socket = SSLSocketFactory.getDefault().createSocket(serverAddress, serverPort);
-                ObjectOutputStream socketout = new ObjectOutputStream(socket.getOutputStream());
-                socketout.writeObject(request);
+            Boolean response = (Boolean) in.readObject();
+            socket.close();
 
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                Boolean response = (Boolean) in.readObject();
-                socket.close();
-
-                return response;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
-                | SignatureException e1) {
-            e1.printStackTrace();
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return false;

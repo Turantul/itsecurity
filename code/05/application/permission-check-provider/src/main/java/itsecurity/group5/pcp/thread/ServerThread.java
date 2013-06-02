@@ -1,6 +1,7 @@
 package itsecurity.group5.pcp.thread;
 
-import itsecurity.group5.pcp.Server;
+import itsecurity.group5.audit.Auditing;
+import itsecurity.group5.pcp.PermissionCheckProviderImpl;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -14,7 +15,6 @@ import javax.net.ssl.SSLSocket;
 import javax.security.cert.X509Certificate;
 
 public class ServerThread extends Thread {
-    private Server server;
     private ServerSocket socket;
     private int port;
     
@@ -22,7 +22,7 @@ public class ServerThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Starting server...");
+        Auditing.logInfo("Starting server...");
         try {
             socket = SSLServerSocketFactory.getDefault().createServerSocket(port);
             ((SSLServerSocket) socket).setNeedClientAuth(true);
@@ -30,18 +30,24 @@ public class ServerThread extends Thread {
             e.printStackTrace();
         }
         
-        System.out.println("Listening to requests...");
+        Auditing.logInfo("Listening to requests...");
         
         while (!socket.isClosed()) {
             try {
                 SSLSocket inSocket = (SSLSocket) socket.accept();
-                System.out.println("New connection received...");
+                Auditing.logInfo("New connection received...");
                 
                 X509Certificate[] certs = inSocket.getSession().getPeerCertificateChain();
                 String name = certs[0].getSubjectDN().getName();
-                System.out.println("Dealing with '" + name.subSequence(3, name.indexOf(", OU=ESSE")) + "'");
+                String identifyer = name.subSequence(3, name.indexOf(", OU=ESSE")).toString();
                 
-                pool.execute(new ServerCommandHandler(inSocket, server));
+                if (identifyer.startsWith("SecuredObject")) {
+                    Auditing.logInfo("Dealing with '" + identifyer + "'");
+                    pool.execute(new ServerCommandHandler(inSocket, new PermissionCheckProviderImpl(identifyer)));
+                }
+                else {
+                    Auditing.logError("Got a request from a non-Secured Object: " + identifyer);
+                }
             } catch (SocketException e) {
                 if (!socket.isClosed()) {
                     e.printStackTrace();
@@ -54,10 +60,6 @@ public class ServerThread extends Thread {
 
     public void setPort(int port) {
         this.port = port;
-    }
-
-    public void setServer(Server server) {
-        this.server = server;
     }
 
     public void shutdown() {
