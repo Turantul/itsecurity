@@ -33,6 +33,7 @@ public class AuthObjManagement {
         initTerminals();
         initZones();
         initObjects();
+        initIris(); 
     }
 
     // User Test Data
@@ -76,15 +77,24 @@ public class AuthObjManagement {
         zones.add(204);
         zoneLevel.put(204, 2);
         zones.add(205);
-        zoneLevel.put(201, 1);
+        zoneLevel.put(205, 1);
+//        zoneLevel.put(201, 1);
+        
     }
 
     // Secure Object Test Data
     private void initObjects() {
         objects.add(301);
-        objectZones.put(301, new ArrayList<Integer>(Arrays.asList(201, 202, 203, 204)));
+        objectZones.put(301, new ArrayList<Integer>(Arrays.asList(201, 202, 203, 204,205)));
+//        objectZones.put(301, new ArrayList<Integer>(Arrays.asList(201, 202, 203, 204)));
         objects.add(305);
         objectZones.put(305, new ArrayList<Integer>(Arrays.asList(205)));
+    }
+    
+    private void initIris(){
+    	byte[] b1 = {(byte)0x03, (byte)0x00, (byte)0x00, (byte)0x00};
+    	
+    	userIrisData.put(3,b1);
     }
 
     public Integer auhtorizeTerminal(Integer terminal) {
@@ -114,8 +124,10 @@ public class AuthObjManagement {
             if (userZones.containsKey(user)) {
                 List<Integer> userZoneList = userZones.get(user);
                 if (userZoneList.contains(zone)) {
+                	System.out.println("Zonelevel is: " +zoneLevel.get(zone).toString());
                     if (zoneLevel.get(zone) == 2) {
                         if (verifyIrisData(user, irisData)) {
+                        	
                             return true;
                         }
                     } else if (zoneLevel.get(zone) == 1) {
@@ -128,8 +140,13 @@ public class AuthObjManagement {
     }
 
     private boolean verifyIrisData(Integer user, byte[] irisData) {
-        if (userIrisData.containsKey(user)) {
-            if (userIrisData.get(user).equals(irisData)) {
+    	System.out.println("Trying to verify iris data:" + irisData.hashCode());
+    	
+    	if (userIrisData.containsKey(user)) {
+    		//changed here, because checking of bytearrays is done this way, otherwise false
+            if (Arrays.equals(userIrisData.get(user), irisData))
+            		/*userIrisData.get(user).equals(irisData))*/ {
+            	System.out.println("checking verification" + userIrisData.get(user).hashCode());
                 return true;
             }
         }

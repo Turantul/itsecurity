@@ -24,6 +24,7 @@ public class SOHelper {
             user.setCertificate(SignatureHelper.getCertificate("src/main/resources/user" + userId + ".p12"));
             user.setText("Authentication");
             user.calculateSignature(SignatureHelper.getKeyPair("src/main/resources/user" + userId + ".p12").getPrivate());
+            
             request.setUser(user);
             
             Authentication terminal = new Authentication();
@@ -31,7 +32,12 @@ public class SOHelper {
             terminal.setText("Authentication");
             terminal.calculateSignature(SignatureHelper.getKeyPair("src/main/resources/terminal" + terminalId + ".p12").getPrivate());
             request.setTerminal(terminal);
+          
+            //added iris scan to every request
             
+            byte[] b1 = {(byte)0x03, (byte)0x00, (byte)0x00, (byte)0x00};
+            request.setIrisData(b1);
+
             return secObj.checkPermission(request);
         } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException | SignatureException e) {
             System.out.println("Error creating authentication data for user or terminal");
