@@ -1,0 +1,86 @@
+﻿<project name="itsecurity.group5" default="compile" basedir=".">
+
+	<!-- Set pathes for the project -->
+  <property name="common" value="application/common"/>
+  <property name="pcp" value="application/permission-check-provider"/>
+  <property name="so" value="application/securedobject"/>
+  <property name="src" value="/src/main/java"/>
+  <property name="res" value="/src/main/resources"/>
+  <property name="build" value="/bin"/>
+  
+  <property name="pcp-main" value="itsecurity.group5.pcp.Server"/>
+  <property name="so-main" value="itsecurity.group5.so.Client"/>
+
+  <!-- classpath for the java application
+		build aund build+res is addes "twice" to work with the 
+		relative paths inside the code and the java classloader-->
+  <path id="pcp-path">
+	<pathelement path="${common}${build}" />
+	<pathelement path="${pcp}${build}" />
+	<pathelement path="${pcp}${build}${res}" />
+  </path>
+  
+  <path id="so-path">
+	<pathelement path="${common}${build}" />
+	<pathelement path="${so}${build}" />
+	<pathelement path="${so}${build}${res}" />
+  </path>
+  
+  <!-- create directories-->
+  <target name="init-common">
+    <mkdir dir="${common}${build}"/>
+  </target>
+  
+  <target name="init-pcp">
+	<mkdir dir="${pcp}${build}"/>
+  </target>
+  
+  <target name="init-so">
+	<mkdir dir="${so}${build}"/>
+  </target>
+
+  <!--compile code
+		pcp and so have dependency to common
+		certificates and truststores have to be coppied-->
+  <target name="compile-common" depends="init-common">
+    <javac srcdir="${common}${src}" destdir="${common}${build}"/>
+  </target>
+  
+  <target name="compile-pcp" depends="init-pcp, compile-common">
+	<javac srcdir="${pcp}${src}" classpathref="pcp-path" destdir="${pcp}${build}"/>
+	<copy todir="${pcp}${build}${res}">
+		<fileset dir="${pcp}${res}" />
+	</copy>
+  </target>
+  
+  <target name="compile-so" depends="init-so, compile-common">
+	<javac srcdir="${so}${src}" classpathref="so-path" destdir="${so}${build}"/>
+	<copy todir="${so}${build}${res}">
+		<fileset dir="${so}${res}" />
+	</copy>
+  </target>
+  
+  <!-- targets for starting the two applications
+		changing working directory is needed for relative paths -->
+  <target name="run-pcp" depends="compile-pcp">
+	<java classname="${pcp-main}" classpathref="pcp-path" fork="true" dir="${pcp}${build}">
+		<!--port where server will listen for requests-->
+		<arg value="9999"/>
+	</java>
+  </target>
+  <target name="run-so" depends="compile-so">
+	<java classname="${so-main}" classpathref="so-path" fork="true" dir="${so}${build}">
+		<!--server adress of permission-check-provider-->
+		<arg value="localhost" />
+		<!--server port of permission-check-provider-->
+		<arg value="9999"/>
+	</java>
+  </target>
+
+  <!-- delete build directories for clean build-->
+  <target name="clean" description="clean" >
+    <delete dir="${common}${build}"/>
+	<delete dir="${pcp}${build}"/>
+	<delete dir="${so}${build}"/>
+  </target>
+</project>
