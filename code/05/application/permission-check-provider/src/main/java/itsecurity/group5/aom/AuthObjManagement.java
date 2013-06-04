@@ -1,6 +1,7 @@
 package itsecurity.group5.aom;
 
 import itsecurity.group5.audit.Auditing;
+import itsecurity.group5.common.beans.Authentication;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,13 +120,13 @@ public class AuthObjManagement {
         return false;
     }
 
-    public boolean authorizeUser(Integer user, Integer zone, byte[] irisData) {
+    public boolean authorizeUser(Authentication user, Integer zone) {
         if (users.contains(user)) {
             if (userZones.containsKey(user)) {
                 List<Integer> userZoneList = userZones.get(user);
                 if (userZoneList.contains(zone)) {
                     if (zoneLevel.get(zone) == 2) {
-                        if (verifyIrisData(user, irisData)) {
+                        if (verifyIrisData(user.getId(), user.getIrisData())) {
                             return true;
                         }
                     } else if (zoneLevel.get(zone) == 1) {
