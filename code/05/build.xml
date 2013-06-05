@@ -1,4 +1,4 @@
-﻿<project name="itsecurity.group5" default="compile" basedir=".">
+<project name="itsecurity.group5" default="compile" basedir=".">
 
 	<!-- Set pathes for the project -->
   <property name="common" value="application/common"/>
@@ -41,7 +41,7 @@
 
   <!--compile code
 		pcp and so have dependency to common
-		certificates and truststores have to be coppied-->
+		certificates and truststores have to be copied-->
   <target name="compile-common" depends="init-common">
     <javac srcdir="${common}${src}" destdir="${common}${build}"/>
   </target>
