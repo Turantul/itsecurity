@@ -121,9 +121,9 @@ public class AuthObjManagement {
     }
 
     public boolean authorizeUser(Authentication user, Integer zone) {
-        if (users.contains(user)) {
-            if (userZones.containsKey(user)) {
-                List<Integer> userZoneList = userZones.get(user);
+        if (users.contains(user.getId())) {
+            if (userZones.containsKey(user.getId())) {
+                List<Integer> userZoneList = userZones.get(user.getId());
                 if (userZoneList.contains(zone)) {
                     if (zoneLevel.get(zone) == 2) {
                         if (verifyIrisData(user.getId(), user.getIrisData())) {

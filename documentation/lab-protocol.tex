@@ -472,7 +472,7 @@ As the permission, object and person data is stored within separate databases, w
 
 The auditing data itself will also be stored in a database which makes it possible to easily access the needed data and generate reports for a manual auditing process. Of course the data is not freely accessible and every access is logged.
 
-In addition to the log entries in the database, a second form of logging data is sent to the auditing system. This data mainly contains additional information about authentication failures and can be used to perform audits about the security of our access system.
+In addition to the log entries in the database, a second form of logging data is sent to the auditing system. This data mainly contains security related issues such as authentication failures or tarpit activations and can be used exclusively by us to perform audits about the security of our access system.
 
 The auditing data is stored for at least three years which should be sufficient to perform security audits. As some of the objects may have additional requirements imposed by law, the access data is stored in a way that allows different storage durations for different objects.
 
@@ -490,7 +490,7 @@ For the physical access events.
 \end{table}
 
 \subsubsection{add-log-entry}
-This method is used for security related issues such as authentication failures or tarpit activations. This data is not stored in a database but in a log and used exclusively by us for security audits.
+This method is used for the logging of security related issues.
 
 \begin{table}[h]
     \centering
